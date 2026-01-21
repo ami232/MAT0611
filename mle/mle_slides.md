@@ -22,9 +22,10 @@ style: |
 ---
 
 # Mathematics for Machine Learning
+
 ## MAD-B3-2526-S2-MAT0611
 
-# Maximum Likelihood Estimation 
+# Maximum Likelihood Estimation
 
 ---
 
@@ -82,6 +83,7 @@ $$P(B) = \sum_{i} P(B|A_i)P(A_i)$$
 **Definition**: A function $X: \Omega \to \mathbb{R}$ that assigns a real number to each outcome
 
 ## Types
+
 - **Discrete**: countable values (e.g., binary outcomes, dice rolls)
 - **Continuous**: uncountable values (e.g., height, temperature)
 
@@ -92,11 +94,13 @@ $$P(B) = \sum_{i} P(B|A_i)P(A_i)$$
 **Definition**: A probability distribution describes how probabilities are assigned to values of a random variable
 
 ## Key Idea
+
 - **Distribution** = complete description of random variable's behavior
 - Specified by PDF/PMF (or equivalently, CDF)
 - Captures all probabilistic information about the variable
 
 **Parametric families**: Distributions characterized by parameters
+
 - E.g., $N(\mu, \sigma^2)$ - two parameters define entire family
 - Our goal: estimate these parameters from data
 
@@ -107,11 +111,13 @@ $$P(B) = \sum_{i} P(B|A_i)P(A_i)$$
 **Definition**: Functions that describe the distribution of a random variable
 
 ## Probability Mass Function (PMF)
+
 For discrete random variables:
 
 $p_X(x) = P(X = x)$
 
 ## Probability Density Function (PDF)
+
 For continuous random variables:
 
 $f_X(x)$ where $P(a \leq X \leq b) = \int_a^b f_X(x)dx$
@@ -123,12 +129,12 @@ $f_X(x)$ where $P(a \leq X \leq b) = \int_a^b f_X(x)dx$
 $$F_X(x) = P(X \leq x)$$
 
 **Expected Value**:
+
 - Discrete: $E[X] = \sum_x x \cdot p_X(x)$
 - Continuous: $E[X] = \int_{-\infty}^{\infty} x \cdot f_X(x)dx$
 
 **Variance**:
 $$\text{Var}(X) = E[(X - E[X])^2] = E[X^2] - (E[X])^2$$
-
 
 ---
 
@@ -186,20 +192,22 @@ $X \sim \text{Beta}(\alpha, \beta)$
 $$f(x) = \frac{x^{\alpha - 1}(1-x)^{\beta - 1}}{B(\alpha, \beta)}, \quad 0 \leq x \leq 1$$
   - If $\alpha = \beta = 1$, the distribution is Uniform(0,1).
 
-
 ---
 
 # Random Samples
 
-**Random Variables**: $X_1, X_2, \ldots, X_n$ 
+**Random Variables**: $X_1, X_2, \ldots, X_n$
+
 - Theoretical quantities (before observation)
 - Each $X_i$ is a function from $\Omega \to \mathbb{R}$
 
 **Observations/Realizations**: $x_1, x_2, \ldots, x_n$
+
 - Actual data values obtained (after observation)
 - Specific numbers: e.g., $x_1 = 3.2, x_2 = 5.1, \ldots$
 
 **Simple Random Sample**: $X_1, \ldots, X_n$ are i.i.d.
+
 - **Independent**: knowing $X_i$ tells us nothing about $X_j$
 - **Identically distributed**: all have same distribution $f(x; \theta)$
 
@@ -212,6 +220,7 @@ For i.i.d. random variables $X_1, \ldots, X_n \sim f(x; \theta)$:
 $$f(x_1, \ldots, x_n; \theta) = \prod_{i=1}^n f(x_i; \theta)$$
 
 **Key properties**:
+
 - Product structure comes from independence
 - Each factor is identical (same $f$, same $\theta$)
 
@@ -226,10 +235,12 @@ $$f(x_1, \ldots, x_n; \theta) = \prod_{i=1}^n f(x_i; \theta)$$
 - Parameter $\theta$ is **unknown**
 - Goal: estimate $\theta$ from the data
 
-**Estimator**: $\hat{\theta} = g(X_1, \ldots, X_n)$ 
+**Estimator**: $\hat{\theta} = g(X_1, \ldots, X_n)$
+
 - The estimator is a function of random variables, so it is also a random variable
 
 **Estimate**: $\hat{\theta} = g(x_1, \ldots, x_n)$
+
 - The estimate is the realized value of the estimator calculated from observed data
 
 ---
@@ -237,6 +248,7 @@ $$f(x_1, \ldots, x_n; \theta) = \prod_{i=1}^n f(x_i; \theta)$$
 # Properties of Estimators
 
 **Bias**: $\text{Bias}(\hat{\theta}) = E[\hat{\theta}] - \theta$
+
 - **Unbiased**: $E[\hat{\theta}] = \theta$
 
 **Mean Squared Error**:
@@ -262,7 +274,6 @@ An unbiased estimator achieving this bound is **efficient** (and is the UMVUE)
 
 ---
 
-
 # Method of Moments (MOM)
 
 **Idea**: Equate sample moments to population moments
@@ -274,6 +285,7 @@ An unbiased estimator achieving this bound is **efficient** (and is the UMVUE)
 Solve: $\mu_k(\theta) = m_k$ for $k = 1, 2, \ldots$
 
 **Example**: For $X \sim N(\mu, \sigma^2)$
+
 - $\hat{\mu}_{\text{MOM}} = \bar{X}$
 - $\hat{\sigma}^2_{\text{MOM}} = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2$
 
@@ -286,7 +298,8 @@ Solve: $\mu_k(\theta) = m_k$ for $k = 1, 2, \ldots$
 Choose $\hat{\theta}$ that **maximizes** the likelihood function:
 $$\hat{\theta}_{\text{MLE}} = \arg\max_{\theta} L(\theta; \mathbf{x})$$
 
-**Interpretation**: 
+**Interpretation**:
+
 - Select parameter value making observed data "most likely"
 - Most plausible explanation for the data
 
@@ -297,7 +310,8 @@ $$\hat{\theta}_{\text{MLE}} = \arg\max_{\theta} L(\theta; \mathbf{x})$$
 **Definition**: Given data $\mathbf{x} = (x_1, \ldots, x_n)$, the likelihood function is:
 $$L(\theta; \mathbf{x}) = f(x_1, \ldots, x_n; \theta) = \prod_{i=1}^n f(x_i; \theta)$$
 
-**Key Insight**: 
+**Key Insight**:
+
 - Same formula as joint PDF/PMF, but different perspective
 - View as function of $\theta$ (not $\mathbf{x}$)
 - Measures "plausibility" of parameter value given data
@@ -308,10 +322,12 @@ $$L(\theta; \mathbf{x}) = f(x_1, \ldots, x_n; \theta) = \prod_{i=1}^n f(x_i; \th
 # Likelihood vs Probability
 
 **Probability**: Fixed $\theta$, variable data
+
 - "What data might we observe?"
 - $P(X = x | \theta)$
 
 **Likelihood**: Fixed data, variable $\theta$
+
 - "Which parameter values are consistent with observed data?"
 - $L(\theta | \mathbf{x})$
 
@@ -323,6 +339,7 @@ $$L(\theta; \mathbf{x}) = f(x_1, \ldots, x_n; \theta) = \prod_{i=1}^n f(x_i; \th
 $$\ell(\theta; \mathbf{x}) = \log L(\theta; \mathbf{x}) = \sum_{i=1}^n \log f(x_i; \theta)$$
 
 **Why use log-likelihood?**
+
 - Converts products to sums (easier computation)
 - Numerically stable (avoids underflow)
 - Preserves location of maximum (log is monotonic)
@@ -453,7 +470,6 @@ $$= n\sigma^2 - n \cdot \frac{\sigma^2}{n} = (n-1)\sigma^2$$
 Therefore:
 $$E[\hat{\sigma}^2_{\text{MLE}}] = \frac{1}{n}E\left[\sum_{i=1}^n (X_i - \bar{X})^2\right] = \frac{n-1}{n}\sigma^2$$
 
-
 ---
 
 # Example 4: Exponential Distribution
@@ -503,7 +519,7 @@ $$\sqrt{n}(\hat{\theta}_{\text{MLE}} - \theta) \xrightarrow{d} N(0, I(\theta)^{-
 
 # Numerical Optimization
 
-## When analytical solution is difficult:
+## When analytical solution is difficult
 
 **Newton-Raphson Method**:
 $$\theta^{(k+1)} = \theta^{(k)} - \left[\frac{\partial^2 \ell}{\partial \theta^2}\right]^{-1} \frac{\partial \ell}{\partial \theta}\Bigg|_{\theta^{(k)}}$$
@@ -558,23 +574,8 @@ print(f"Numerical MLE: {mle_numerical:.4f}")
 
 ---
 
-# Exercises
-
-1. Derive the MLE for $X_1, \ldots, X_n \sim U(0, \theta)$
-   - PDF: $f(x;\theta) = \frac{1}{\theta}$ for $0 \leq x \leq \theta$, zero otherwise
-   - Hint: Likelihood isn't differentiable; consider where it's maximized
-
-2. Find MLE for Gamma distribution: $X_1, \ldots, X_n \sim \text{Gamma}(\alpha, \beta)$, with $\alpha$ known
-   - PDF: $f(x;\beta) = \frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1} e^{-\beta x}$, $x > 0$
-
-3. Show that the MLE for Geometric distribution parameter $p$ is $\hat{p} = \frac{1}{\bar{x}}$
-   - PMF: $P(X=k) = (1-p)^{k-1}p$, $k = 1, 2, 3, \ldots$ (trials until success)
-
----
-
 ## Resources
 
 - Casella & Berger: *Statistical Inference* (Ch. 7)
 - Wasserman: *All of Statistics* (Ch. 9)
 - Murphy: *Probabilistic Machine Learning* (Ch. 4)
-
