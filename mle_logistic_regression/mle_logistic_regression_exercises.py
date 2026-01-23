@@ -411,6 +411,6 @@ ax4.legend(loc="best")
 ax4.grid(True, alpha=0.3, which="both")
 
 plt.tight_layout()
-plt.savefig("logistic_regression_mle_results.png", dpi=300, bbox_inches="tight")
-print("Plots saved as 'logistic_regression_mle_results.png'")
+plt.savefig("mle_logistic_regression_results.png", dpi=300, bbox_inches="tight")
+print("Plots saved as 'mle_logistic_regression_results.png'")
 plt.show()

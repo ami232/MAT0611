@@ -103,12 +103,24 @@ $$\log\left(\frac{P(Y=1|\mathbf{X})}{1-P(Y=1|\mathbf{X})}\right) = \beta_0 + \be
 ## Maximum Likelihood Estimation
 
 **Likelihood** for observations $(y_i, \mathbf{x}_i)$:
-$$L(\boldsymbol{\beta}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i}$$
+$$\begin{aligned}
+L(\boldsymbol{\beta}) &= \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i} \\
+&= \prod_{i=1}^n \sigma(\mathbf{x}_i^T\boldsymbol{\beta})^{y_i}(1-\sigma(\mathbf{x}_i^T\boldsymbol{\beta}))^{1-y_i}
+\end{aligned}$$
 
-$$\text{where}\quad p_i = P(Y_i = 1 | \mathbf{x}_i) = \frac{1}{1 + e^{-\mathbf{x}_i^T\boldsymbol{\beta}}}$$
+Remember $p_i$ is a function of $\boldsymbol{\beta}$:
+
+$$p_i = P(Y=1|\mathbf{x}_i, \boldsymbol{\beta}) = \sigma(\mathbf{x}_i^T\boldsymbol{\beta}) = \frac{1}{1 + e^{-\mathbf{x}_i^T\boldsymbol{\beta}}}$$
+
+---
+
+# Logistic Regression: Estimation
 
 **Log-likelihood**:
-$$\ell(\boldsymbol{\beta}) = \sum_{i=1}^n [y_i \log(p_i) + (1-y_i)\log(1-p_i)]$$
+$$\begin{aligned}\ell(\boldsymbol{\beta}) &= \sum_{i=1}^n [y_i \log(p_i) + (1-y_i)\log(1-p_i)] \\
+&= \sum_{i=1}^n [y_i \log(\sigma(\mathbf{x}_i^T\boldsymbol{\beta})) + (1-y_i)\log(1-\sigma(\mathbf{x}_i^T\boldsymbol{\beta}))] \\
+&= \sum_{i=1}^n y_i \log{\left( \frac{1}{1 + e^{-\mathbf{x}_i^T\boldsymbol{\beta}}}\right)} + (1-y_i)\log{\left(1 - \frac{1}{1 + e^{-\mathbf{x}_i^T\boldsymbol{\beta}}}\right)} \\
+\end{aligned}$$
 
 ---
 
@@ -122,9 +134,16 @@ Use **iterative optimization**:
 - Iteratively Reweighted Least Squares (IRLS)
 - Gradient descent variants
 
-**Algorithm** (Newton-Raphson):
-$$\boldsymbol{\beta}^{(k+1)} = \boldsymbol{\beta}^{(k)} - \mathbf{H}^{-1}\nabla\ell$$
+---
+# Logistic Regression: Newton-Raphson Method
 
+- If $\beta_0, ..., \beta_p$  maximize $\ell(\boldsymbol{\beta})$, they also make  $\nabla\ell(\boldsymbol{\beta}) = 0$.
+- Newton-Raphson is an iterative algorithm to find roots (zeroes) of real-valued functions.
+- Therefore, we can use it to find $\hat{\boldsymbol{\beta}}$ such that $\nabla\ell(\hat{\boldsymbol{\beta}}) = 0$, we have MLE candidates
+- It starts with an initial guess (e.g., $\boldsymbol{\beta}^{(0)} = \mathbf{0}$).
+- The guess is updated iteratively until $\nabla\ell(\boldsymbol{\beta}^{(k)}) \approx \mathbf{0} \Leftrightarrow \|\nabla\ell(\boldsymbol{\beta}^{(k)})\| < \epsilon$.
+- The $k$-th guess update is given by:
+  $$\boldsymbol{\beta}^{(k+1)} = \boldsymbol{\beta}^{(k)} - \left[ \mathbf{H}(\boldsymbol{\beta}^{(k)})\right] ^{-1}\nabla\ell(\boldsymbol{\beta}^{(k)})$$
 where:
 
 - $\nabla\ell$: gradient (score vector)
@@ -137,8 +156,8 @@ where:
 **Log-likelihood**:
 $$\ell(\boldsymbol{\beta}) = \sum_{i=1}^n [y_i \log(p_i) + (1-y_i)\log(1-p_i)]$$
 
-**Gradient** w.r.t. $\beta_j$:
-$$\frac{\partial\ell}{\partial\beta_j} = \sum_{i=1}^n \frac{\partial\ell}{\partial p_i} \cdot \frac{\partial p_i}{\partial\beta_j}$$
+We can use the **chain rule** to find the **gradient** (remember $p_i$ depends on $\boldsymbol{\beta}$):
+$$\frac{\partial\ell}{\partial\beta_j} =  \sum_{i=1}^n \frac{\partial\ell}{\partial p_i} \cdot \frac{\partial p_i}{\partial\beta_j}$$
 
 **Key derivatives**:
 
@@ -154,6 +173,12 @@ $$\frac{\partial p_i}{\partial\beta_j} = p_i(1-p_i)x_{ij}$$
 
 </div>
 </div>
+
+<center>
+
+Remember that $p_i = \sigma(\mathbf{x}_i^T\boldsymbol{\beta})$ and $\frac{d\sigma(z)}{dz} = \sigma(z)(1-\sigma(z))$.
+
+</center>
 
 ---
 
@@ -175,25 +200,29 @@ where:
 
 # Logistic Regression: Hessian Matrix
 
-**Second derivative** w.r.t. $\beta_j$ and $\beta_k$:
-$$\frac{\partial^2\ell}{\partial\beta_j\partial\beta_k} = \sum_{i=1}^n \frac{\partial}{\partial\beta_k}[(y_i - p_i)x_{ij}]$$
+Following a similar approach, we compute the **Hessian** (matrix of second derivatives):
 
-**Key observation**: $y_i$ doesn't depend on $\beta_k$
+$$\boldsymbol{H}_{j,k} = \frac{\partial^2\ell}{\partial\beta_j\partial\beta_k} = \sum_{i=1}^n \frac{\partial}{\partial\beta_k}[(y_i - p_i)x_{ij}]$$
+
+Remember $y_i$ and $x_i$ don't depend on $\beta_k$, only $p_i$ does:
 
 $$\frac{\partial^2\ell}{\partial\beta_j\partial\beta_k} = -\sum_{i=1}^n x_{ij} \cdot \frac{\partial p_i}{\partial\beta_k} = -\sum_{i=1}^n x_{ij} \cdot p_i(1-p_i)x_{ik}$$
 
-**Simplification**:
-$$\frac{\partial^2\ell}{\partial\beta_j\partial\beta_k} = -\sum_{i=1}^n p_i(1-p_i)x_{ij}x_{ik}$$
+After simplifying, we get:
+$$\boldsymbol{H}_{j,k} = \frac{\partial^2\ell}{\partial\beta_j\partial\beta_k} = -\sum_{i=1}^n p_i(1-p_i)x_{ij}x_{ik}$$
 
 ---
 
 # Logistic Regression: Hessian (Matrix Form)
 
-**Hessian matrix**:
+We can express the Hessian in matrix form:
 $$\mathbf{H} = -\mathbf{X}^T\mathbf{W}\mathbf{X}$$
 
 where $\mathbf{W}$ is a diagonal matrix with weights:
+
 $$\mathbf{W} = \text{diag}(w_1, w_2, \ldots, w_n), \quad w_i = p_i(1-p_i)$$
+
+**Exercise:** Show that $\left[\mathbf{X}^T\mathbf{W}\mathbf{X}\right]_{ij} = \sum_{i=1}^n p_i(1-p_i)x_{ij}x_{ik}$$
 
 **Properties**:
 
@@ -217,5 +246,4 @@ $$\boldsymbol{\beta}^{(k+1)} = \boldsymbol{\beta}^{(k)} + (\mathbf{X}^T\mathbf{W
 2. Compute $\mathbf{p}$ using current $\boldsymbol{\beta}$
 3. Compute $\mathbf{W} = \text{diag}(p_i(1-p_i))$
 4. Update $\boldsymbol{\beta}$
-5. Check convergence: $\|\nabla\ell\| < \epsilon$
-6. Repeat steps 2-5
+5. If convergence $\|\nabla\ell\| < \epsilon$, stop, otherwise repeat steps 2-5

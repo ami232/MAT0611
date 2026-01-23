@@ -1,5 +1,5 @@
 ---
-marp: true
+marp: false
 theme: default
 paginate: true
 backgroundColor: #fff
@@ -571,6 +571,22 @@ result = minimize(neg_log_likelihood,
 mle_numerical = result.x[0]
 print(f"Numerical MLE: {mle_numerical:.4f}")
 ```
+
+---
+
+# Exercises
+
+1. Derive the MLE for $X_1, \ldots, X_n \sim U(0, \theta)$
+   - PDF: $f(x;\theta) = \frac{1}{\theta}$ for $0 \leq x \leq \theta$, zero otherwise
+   - Hint: Likelihood isn't differentiable; consider where it's maximized
+
+2. Find MLE for Gamma distribution: $X_1, \ldots, X_n \sim \text{Gamma}(\alpha, \beta)$, with $\alpha$ known
+   - PDF: $f(x;\beta) = \frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1} e^{-\beta x}$, $x > 0$
+
+3. Show that the MLE for Geometric distribution parameter $p$ is $\hat{p} = \frac{1}{\bar{x}}$
+   - PMF: $P(X=k) = (1-p)^{k-1}p$, $k = 1, 2, 3, \ldots$ (trials until success)
+
+Also, check notebook `mle/mle_programing_exercises.ipynb` for numerical implementations and programming exercises.
 
 ---
 
