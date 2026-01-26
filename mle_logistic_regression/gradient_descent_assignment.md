@@ -44,9 +44,7 @@ Your comment block must address the following points:
 - Memory requirements
 - When to prefer gradient descent vs. Newton-Raphson
 
-## Extra Credit Opportunities
-
-**Additional points awarded for:**
+**Points awarded for:**
 
 1. **Matrix Operations** (+30%)
    - Implement using vectorized matrix operations whenever possible
@@ -114,7 +112,7 @@ Submissions that cannot be explained by their author may be subject to further r
 
 | Criterion | Weight |
 | --------- | ------ |
-| Code: working implementation and code quality | 50% |
-| Discussion: quality of analysis and depth | 30% |
+| Code: working implementation and code quality | 30% |
+| Discussion: quality of analysis and depth | 20% |
 | Matrix operations | 30% |
 | Generalization to more variables | 20% |
