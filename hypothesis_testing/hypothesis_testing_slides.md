@@ -52,14 +52,64 @@ style: |
 - Measure heights: $\bar{x} = 172.5$ cm, $s = 8.2$ cm
 - Population standard deviation unknown
 
-**Hypotheses** (bilateral/two-sided test):
-$$H_0: \mu = 170 \quad \text{vs} \quad H_1: \mu \neq 170$$
+**Hypotheses** (two-sided test):
+$$H_0: \mu = 170 \quad \text{vs.} \quad H_1: \mu \neq 170$$
+
+---
+
+# Distribution of the Sample Mean
+
+## Sampling Distribution
+
+When we take repeated samples from a population and compute $\bar{X}$ for each sample, the distribution of $\bar{X}$ is called the **sampling distribution of the sample mean**.
+
+**Key Properties**:
+
+If $X_1, X_2, \ldots, X_n$ are i.i.d. with mean $\mu$ and variance $\sigma^2$:
+
+$$E[\bar{X}] = \mu$$
+
+$$\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \Rightarrow \text{SE}(\bar{X}) = \frac{\sigma}{\sqrt{n}}$$
+
+Note that both the variance and standard error decrease as $n$ increases.
+
+**Exercise**: Prove these properties.
+
+---
+
+# Central Limit Theorem (CLT)
+
+For large enough sample size $n$, the sampling distribution of $\bar{X}$ converges in distribution to a normal distribution:
+
+$$\bar{X} \overset{d}{\longrightarrow}  N\left(\mu, \frac{\sigma^2}{n}\right)$$
+
+Equivalently, the standardized sample mean converges to a standard normal:
+$$\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \overset{d}{\longrightarrow} N(0, 1)$$
+
+**Key insight**: This result holds regardless of the original population distribution of $X_i$ (provided the variance is finite).
+
+---
+
+# When Population Variance is Unknown
+
+**Problem**: In practice, we rarely know $\sigma^2$.
+
+**Solution**: Replace $\sigma$ with the sample standard deviation $s$. This introduces additional uncertainty, so the test statistic follows a t-distribution:
+
+$$t = \frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{n-1}$$
+
+**t-distribution Properties**:
+
+- Similar to standard normal but with heavier tails
+- Converges to $N(0,1)$ as $n \to \infty$
+- Degrees of freedom: $n - 1$
+- Valid when $X_1, X_2, \ldots, X_n$ are normally distributed OR $n$ is large enough for CLT (typically $n \geq 30$)
 
 ---
 
 # t-test Computation
 
-**Test statistic**:
+Looking back at our hypothesis test example, we can calculate the **test statistic**:
 $$t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{172.5 - 170}{8.2/\sqrt{50}} = \frac{2.5}{1.16} = 2.16$$
 
 **Degrees of freedom**: $df = n - 1 = 49$
@@ -115,15 +165,15 @@ print(f"p-value: {p_value_scipy:.4f}")
 
 ## The Basic Framework
 
-**Null Hypothesis** ($H_0$): claim we test (usually "no effect")
+**Null Hypothesis** ($H_0$): The claim we test (typically "no effect" or "no difference")
 
-**Alternative Hypothesis** ($H_1$ or $H_a$): what we believe if $H_0$ is false
+**Alternative Hypothesis** ($H_1$ or $H_a$): What we conclude if $H_0$ is rejected
 
-**Test Statistic**: function of data that measures evidence against $H_0$
+**Test Statistic**: A function of the data that measures evidence against $H_0$
 
-**p-value**: probability of observing test statistic at least as extreme as observed, assuming $H_0$ is true
+**p-value**: The probability of observing a test statistic at least as extreme as the one observed, assuming $H_0$ is true
 
-**Significance Level** ($\alpha$): threshold for rejection (commonly 0.05)
+**Significance Level** ($\alpha$): Threshold for rejection (commonly 0.05)
 
 ---
 
@@ -132,16 +182,16 @@ print(f"p-value: {p_value_scipy:.4f}")
 **Reject** $H_0$ if:
 
 - p-value $< \alpha$, or equivalently
-- Test statistic falls in rejection region
+- The test statistic falls in the rejection region
 
 **Fail to reject** $H_0$ if:
 
 - p-value $\geq \alpha$
 
-**Important**:
+**Important Notes**:
 
-- "Fail to reject" $\neq$ "accept" $H_0$
-- Absence of evidence $\neq$ evidence of absence
+- "Fail to reject" $H_0$ does not mean we "accept" $H_0$
+- Absence of evidence is not evidence of absence
 
 ---
 
@@ -149,49 +199,45 @@ print(f"p-value: {p_value_scipy:.4f}")
 
 |                    | $H_0$ True      | $H_0$ False     |
 |--------------------|-----------------|-----------------|
-| **Reject** $H_0$   | Type I Error    | Correct         |
-|                    | (False Positive)| (True Positive) |
-| **Don't Reject** $H_0$ | Correct     | Type II Error   |
-|                    | (True Negative) | (False Negative)|
+| **Reject** $H_0$   | Type I Error (False Positive)    | Correct (True Positive)|
+| **Don't Reject** $H_0$ | Correct (True Negative)     | Type II Error (False Negative)   |
 
-**Type I Error**: $P(\text{Reject } H_0 | H_0 \text{ true}) = \alpha$
-
-**Type II Error**: $P(\text{Don't Reject } H_0 | H_0 \text{ false}) = \beta$
-
-**Power**: $1 - \beta$ (probability of correctly rejecting false $H_0$)
+- **Type I Error**: $P(\text{Reject } H_0 | H_0 \text{ true}) = \alpha$
+- **Type II Error**: $P(\text{Don't Reject } H_0 | H_0 \text{ false}) = \beta$
+- **Power**: $1 - \beta$ (probability of correctly rejecting false $H_0$)
 
 ---
 
-# One-sided vs Two-sided Tests
+# One-sided vs. Two-sided Tests
 
 **Two-sided** (most common):
-$$H_0: \beta_j = 0 \quad \text{vs} \quad H_1: \beta_j \neq 0$$
+$$H_0: \mu = 0 \quad \text{vs.} \quad H_1: \mu \neq 0$$
 p-value = $2 \cdot P(T > |t|)$
 
 **One-sided** (directional):
-$$H_0: \beta_j \leq 0 \quad \text{vs} \quad H_1: \beta_j > 0$$
+$$H_0: \mu \leq 0 \quad \text{vs.} \quad H_1: \mu > 0$$
 p-value = $P(T > t)$
 
-**When to use one-sided**:
+**When to use one-sided tests**:
 
-- Strong prior belief about direction
-- Only one direction is practically meaningful
+- Strong prior belief about the direction of the effect
+- Only one direction is practically or theoretically meaningful
 
 ---
 
 # Confidence Intervals
 
-A $(1-\alpha) \times 100\%$ confidence interval for $\beta_j$:
-$$\hat{\beta}_j \pm t_{\alpha/2, n-p-1} \cdot \text{SE}(\hat{\beta}_j)$$
+A $(1-\alpha) \times 100\%$ confidence interval for $\mu$:
+$$\hat{\mu} \pm t_{\alpha/2, n-1} \cdot \text{SE}(\hat{\mu})$$
 
-**Interpretation**:
+**Correct Interpretation**:
 
-- If we repeated sampling many times, $(1-\alpha) \times 100\%$ of intervals would contain true $\beta_j$
-- **Not**: "95% probability $\beta_j$ is in this interval"
+- If we repeated the sampling procedure many times, $(1-\alpha) \times 100\%$ of the computed intervals would contain the true value of $\mu$
+- **Incorrect interpretation**: "There is a 95% probability that $\mu$ is in this specific interval"
 
-**Connection to hypothesis testing**:
+**Connection to Hypothesis Testing**:
 
-- If CI doesn't contain 0, reject $H_0: \beta_j = 0$ at level $\alpha$
+- If the confidence interval does not contain 0, then we reject $H_0: \mu = 0$ at significance level $\alpha$
 
 ---
 
@@ -221,7 +267,7 @@ print(model.summary())
 ---
 
 ``` text
-                            OLS Regression Results                            
+                            OLS Regression Results
 ==============================================================================
 Dep. Variable:                      y   R-squared:                       0.913
 Model:                            OLS   Adj. R-squared:                  0.911
@@ -230,8 +276,8 @@ Date:                Wed, 21 Jan 2026   Prob (F-statistic):           4.79e-52
 Time:                        10:00:00   Log-Likelihood:                -147.62
 No. Observations:                 100   AIC:                             301.2
 Df Residuals:                      97   BIC:                             309.1
-Df Model:                           2                                         
-Covariance Type:            nonrobust                                         
+Df Model:                           2
+Covariance Type:            nonrobust
 ==============================================================================
                  coef    std err          t      P>|t|      [0.025      0.975]
 ------------------------------------------------------------------------------
@@ -266,6 +312,7 @@ Notes:
 - `R-squared`: proportion of variance explained
 - `F-statistic`: test of overall model significance
 - `Prob (F-statistic)`: p-value for F-test
+- `AIC`, `BIC`: information criteria for model selection
 
 ---
 
@@ -273,13 +320,13 @@ Notes:
 
 ## Hypothesis
 
-$$H_0: \beta_j = 0 \quad \text{vs} \quad H_1: \beta_j \neq 0$$
+$$H_0: \beta_j = 0 \quad \text{vs.} \quad H_1: \beta_j \neq 0$$
 
-**Interpretation**: Is predictor $X_j$ significant?
+**Interpretation**: Does predictor $X_j$ have a significant effect on the response?
 
 ## Test Statistic
 
-$$t = \frac{\hat{\beta}_j - 0}{\text{SE}(\hat{\beta}_j)}$$
+$$t = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}$$
 
 Under $H_0$: $t \sim t_{n-p-1}$ (t-distribution with $n-p-1$ degrees of freedom)
 
@@ -287,16 +334,19 @@ Under $H_0$: $t \sim t_{n-p-1}$ (t-distribution with $n-p-1$ degrees of freedom)
 
 # Standard Error of Coefficients
 
-For **linear regression**:
+For **linear regression**, the Fisher Information Matrix is:
+$$\mathbf{I}(\boldsymbol{\beta}, \sigma^2) = \frac{1}{\sigma^2}\mathbf{X}^T\mathbf{X}$$
+
+The standard error of $\hat{\beta}_j$ is:
 $$\text{SE}(\hat{\beta}_j) = \sqrt{\hat{\sigma}^2 [(\mathbf{X}^T\mathbf{X})^{-1}]_{jj}}$$
 
-where $\hat{\sigma}^2 = \frac{\text{RSS}}{n-p-1}$ is the residual variance estimate
+where $\hat{\sigma}^2 = \frac{\text{RSS}}{n-p-1}$ is the estimated residual variance.
 
-**Key factors affecting SE**:
+**Key Factors Affecting Standard Error**:
 
-- Residual variance $\sigma^2$ (larger $\Rightarrow$ larger SE)
-- Sample size $n$ (larger $\Rightarrow$ smaller SE)
-- Multicollinearity (correlation among predictors $\Rightarrow$ larger SE)
+- Residual variance $\sigma^2$: larger variance $\Rightarrow$ larger SE
+- Sample size $n$: larger sample $\Rightarrow$ smaller SE
+- Multicollinearity: higher correlation among predictors $\Rightarrow$ larger SE
 
 ---
 
@@ -306,16 +356,16 @@ where $\hat{\sigma}^2 = \frac{\text{RSS}}{n-p-1}$ is the residual variance estim
 
 For $X_1$:
 
-- $\hat{\beta}_1 = 2.9456$
-- $\text{SE}(\hat{\beta}_1) = 0.095$
-- $t = \frac{2.9456}{0.095} = 31.004$
+- $\hat{\beta}_1 = 3.2261$
+- $\text{SE}(\hat{\beta}_1) = 0.120$
+- $t = \frac{3.2261}{0.120} = 26.859$
 
-**p-value**: $P(|T| > 31.004)$ where $T \sim t_{97}$
+**p-value**: $P(|T| > 26.859)$ where $T \sim t_{97}$
 
-Since $t = 31.004$ is extremely large:
+Since $t = 26.859$ is extremely large:
 
 - p-value $\approx 0.000$ (very strong evidence against $H_0$)
-- Reject $H_0$: $X_1$ is highly significant
+- **Conclusion**: Reject $H_0$; $X_1$ is highly significant
 
 ---
 
@@ -323,10 +373,9 @@ Since $t = 31.004$ is extremely large:
 
 ## Hypothesis
 
-$$H_0: \beta_1 = \beta_2 = \cdots = \beta_p = 0$$
-$$H_1: \text{at least one } \beta_j \neq 0$$
+$$H_0: \beta_1 = \beta_2 = \cdots = \beta_p = 0 \quad \text{vs.} \quad H_1: \text{at least one } \beta_j \neq 0$$
 
-**Interpretation**: Does the model explain anything beyond the intercept?
+**Interpretation**: Does the model explain variation in the response beyond what the intercept alone explains?
 
 ---
 
@@ -334,12 +383,12 @@ $$H_1: \text{at least one } \beta_j \neq 0$$
 
 $$F = \frac{(\text{TSS} - \text{RSS})/p}{\text{RSS}/(n-p-1)} = \frac{\text{MSR}}{\text{MSE}}$$
 
-where:
+**where:**
 
-- TSS = Total Sum of Squares = $\sum(y_i - \bar{y})^2$
-- RSS = Residual Sum of Squares = $\sum(y_i - \hat{y}_i)^2$
-- MSR = Mean Square Regression = $(\text{TSS} - \text{RSS})/p$
-- MSE = Mean Square Error = $\text{RSS}/(n-p-1)$
+- $\text{TSS}$ = Total Sum of Squares = $\sum_{i=1}^n(y_i - \bar{y})^2$
+- $\text{RSS}$ = Residual Sum of Squares = $\sum_{i=1}^n(y_i - \hat{y}_i)^2$
+- $\text{MSR}$ = Mean Square Regression = $(\text{TSS} - \text{RSS})/p$
+- $\text{MSE}$ = Mean Square Error = $\text{RSS}/(n-p-1)$
 
 Under $H_0$: $F \sim F_{p, n-p-1}$
 
@@ -363,15 +412,15 @@ $$\underbrace{\sum(y_i - \bar{y})^2}_{\text{Total Variation}} = \underbrace{\sum
 **R-squared** (Coefficient of Determination):
 $$R^2 = 1 - \frac{\text{RSS}}{\text{TSS}} = \frac{\text{TSS} - \text{RSS}}{\text{TSS}}$$
 
-- Proportion of variance explained by the model
-- Range: $[0, 1]$ (higher is better)
-- **Problem**: Always increases when adding predictors
+- Represents the proportion of variance in the response explained by the model
+- Range: $[0, 1]$ (higher values indicate better fit)
+- **Limitation**: Always increases (or stays constant) when adding predictors, even if irrelevant
 
 **Adjusted R-squared**:
-$$R^2_{\text{adj}} = 1 - \frac{\text{RSS}/(n-p-1)}{\text{TSS}/(n-1)}$$
+$$\bar{R}^2 = 1 - \frac{\text{RSS}/(n-p-1)}{\text{TSS}/(n-1)}$$
 
 - Penalizes model complexity
-- Can decrease when adding irrelevant predictors
+- Can decrease when adding predictors that do not sufficiently improve fit
 
 ---
 
@@ -379,11 +428,11 @@ $$R^2_{\text{adj}} = 1 - \frac{\text{RSS}/(n-p-1)}{\text{TSS}/(n-1)}$$
 
 $$F = \frac{R^2/p}{(1-R^2)/(n-p-1)}$$
 
-**Insight**:
+**Key Insights**:
 
-- Large $R^2$ $\Rightarrow$ large $F$ $\Rightarrow$ reject $H_0$
-- F-test accounts for sample size and number of predictors
-- Significant F-test $\not\Rightarrow$ all coefficients significant
+- Large $R^2$ implies large $F$, which leads to rejecting $H_0$
+- The F-test accounts for both sample size and the number of predictors
+- A significant F-test does not imply that all individual coefficients are significant
 
 ---
 
@@ -392,30 +441,61 @@ $$F = \frac{R^2/p}{(1-R^2)/(n-p-1)}$$
 From our model output:
 
 ```
-F-statistic:                     410.2
-Prob (F-statistic):           1.11e-47
+F-statistic:                     506.0
+Prob (F-statistic):           4.79e-52
 ```
 
 **Interpretation**:
 
-- $F = 410.2$ is very large
-- p-value $= 1.11 \times 10^{-47} < 0.05$
-- **Conclusion**: Strong evidence that at least one predictor is significant
-- Model explains variation in $Y$ beyond just the mean
+- $F = 506.0$ is very large
+- p-value $= 4.79 \times 10^{-52} < 0.05$
+- **Conclusion**: There is very strong evidence that at least one predictor is significant
+- The model explains substantial variation in $Y$ beyond the intercept-only model
+
+---
+
+# Model Selection Criteria
+
+**Akaike Information Criterion (AIC)**:
+$$\text{AIC} = -2\ell(\hat{\boldsymbol{\beta}}) + 2k$$
+
+**Bayesian Information Criterion (BIC)**:
+$$\text{BIC} = -2\ell(\hat{\boldsymbol{\beta}}) + k\log(n)$$
+
+where $k$ is the number of parameters and $n$ is the sample size.
+
+**Usage Guidelines**:
+
+- Lower values indicate better models
+- BIC penalizes model complexity more heavily than AIC (especially for large $n$)
+- Both can be used for comparing non-nested models
+- AIC aims to minimize prediction error; BIC approximates Bayes factors
 
 ---
 
 # Logistic Regression: Wald Test
 
-For **logistic regression**, use **Wald test**:
+For **logistic regression**, we use the **Wald test**:
 $$z = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}$$
 
-Under $H_0$: $z \sim N(0, 1)$ (approximately, for large $n$)
+Under $H_0: \beta_j = 0$: $z \overset{\text{approx}}{\sim} N(0, 1)$ (for large $n$)
 
-**Standard errors** computed from Fisher Information:
-$$\text{Var}(\hat{\boldsymbol{\beta}}) \approx \mathbf{I}(\hat{\boldsymbol{\beta}})^{-1} = [-\mathbf{H}]^{-1}$$
+For **logistic regression**, the Fisher Information Matrix is:
+$$\mathbf{I}(\boldsymbol{\beta}) = \mathbf{X}^T\mathbf{W}\mathbf{X}$$
 
-**Key property**: For logistic regression, the Hessian depends only on predicted probabilities (not on $y_i$), so the observed Hessian equals the expected Hessian, and Fisher Information $\mathbf{I}(\boldsymbol{\beta}) = -\mathbf{H}$
+where $\mathbf{W} = \text{diag}(\hat{p}_i(1-\hat{p}_i))$ and $\hat{p}_i = \frac{1}{1+e^{-\mathbf{x}_i^T\boldsymbol{\beta}}}$
+
+The standard error of $\hat{\beta}_j$ is:
+$$\text{SE}(\hat{\beta}_j) = \sqrt{[\mathbf{I}(\hat{\boldsymbol{\beta}})^{-1}]_{jj}} = \sqrt{[(\mathbf{X}^T\mathbf{W}\mathbf{X})^{-1}]_{jj}}$$
+
+---
+
+**Key Differences from Linear Regression**:
+
+- No separate $\sigma^2$ parameter (variance is determined by the Bernoulli distribution)
+- Weights $\mathbf{W}$ depend on predicted probabilities $\hat{p}_i$, not on observed responses $y_i$
+- The Hessian is $\mathbf{H} = -\mathbf{X}^T\mathbf{W}\mathbf{X}$, so $\mathbf{I}(\boldsymbol{\beta}) = -\mathbf{H}$
+- Wald test uses the standard normal distribution (asymptotically), not the t-distribution, because the variance structure is fully specified by the model
 
 ---
 
@@ -443,7 +523,7 @@ print(logit_model.summary())
 # Logistic Regression Output
 
 ```
-                           Logit Regression Results                           
+                           Logit Regression Results
 ==============================================================================
 Dep. Variable:                      y   No. Observations:                  200
 Model:                          Logit   Df Residuals:                      197
@@ -479,43 +559,6 @@ $$\exp(\beta_j) = \text{odds ratio}$$
 
 - $z = 7.346$, p-value $< 0.001$
 - Strong evidence that $X_1$ affects outcome
-
----
-
-# Multiple Testing Problem
-
-**Scenario**: Testing $p$ coefficients, each at level $\alpha = 0.05$
-
-**Family-wise Error Rate** (FWER):
-$$P(\text{at least one false positive}) = 1 - (1-\alpha)^p$$
-
-For $p = 20$ tests: FWER $\approx 0.64$ (64% chance of false positive!)
-
-**Problem**: More tests $\Rightarrow$ higher chance of spurious findings
-
-## Bonferroni Correction
-
-Use adjusted significance level: $\alpha^* = \alpha/m$ for $m$ tests
-
-**Conservative** but simple
-
----
-
-# Model Selection Criteria
-
-**Akaike Information Criterion (AIC)**:
-$$\text{AIC} = -2\ell(\hat{\boldsymbol{\beta}}) + 2k$$
-
-**Bayesian Information Criterion (BIC)**:
-$$\text{BIC} = -2\ell(\hat{\boldsymbol{\beta}}) + k\log(n)$$
-
-where $k$ is number of parameters, $n$ is sample size
-
-**Usage**:
-
-- Lower is better
-- BIC penalizes complexity more heavily than AIC
-- Use for comparing non-nested models
 
 ---
 
