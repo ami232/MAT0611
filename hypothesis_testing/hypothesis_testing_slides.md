@@ -51,6 +51,7 @@ style: |
 - Collect sample of $n = 50$ adults
 - Measure heights: $\bar{x} = 172.5$ cm, $s = 8.2$ cm
 - Population standard deviation unknown
+- **Assumption**: Heights are normally distributed in the population
 
 **Hypotheses** (two-sided test):
 $$H_0: \mu = 170 \quad \text{vs.} \quad H_1: \mu \neq 170$$
@@ -88,31 +89,72 @@ $$\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \overset{d}{\longrightarrow} N(0, 1)$$
 
 **Key insight**: This result holds regardless of the original population distribution of $X_i$ (provided the variance is finite).
 
+**Implication for testing**: When relying on CLT (typically $n \geq 30$), we can use the **z-distribution** (standard normal) for testing (possibly instead of the t-distribution).
+
 ---
 
 # When Population Variance is Unknown
 
 **Problem**: In practice, we rarely know $\sigma^2$.
 
-**Solution**: Replace $\sigma$ with the sample standard deviation $s$. This introduces additional uncertainty, so the test statistic follows a t-distribution:
+**Solution**: Replace $\sigma$ with the sample standard deviation $s$:
 
-$$t = \frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{n-1}$$
+$$\frac{\bar{X} - \mu}{s/\sqrt{n}}$$
 
-**t-distribution Properties**:
+**Which distribution does this follow?**
 
-- Similar to standard normal but with heavier tails
+---
+
+**Case 1: Data is normally distributed** ($X_i \sim N(\mu, \sigma^2)$)
+
+- The statistic follows a **t-distribution**: $t = \frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{n-1}$
+- The t-distribution arises because $s$ is random and estimated from the data
+- **This holds exactly for any sample size $n$**
+
+---
+
+**Case 2: Data is not normally distributed, but $n$ is large**
+
+- By CLT, $\bar{X}$ is approximately normal
+- For large $n$, $s \approx \sigma$, so the statistic is approximately **standard normal**: $z = \frac{\bar{X} - \mu}{s/\sqrt{n}} \overset{\text{approx}}{\sim} N(0, 1)$
+- **In practice**, the t-distribution is often used as it's more conservative (heavier tails)
+
+---
+
+# t-distribution Properties
+
+- Similar to standard normal but with **heavier tails**
 - Converges to $N(0,1)$ as $n \to \infty$
-- Degrees of freedom: $n - 1$
-- Valid when $X_1, X_2, \ldots, X_n$ are normally distributed OR $n$ is large enough for CLT (typically $n \geq 30$)
+- Degrees of freedom: $df = n - 1$
+- More conservative than z (wider confidence intervals, harder to reject $H_0$)
+
+---
+
+**Practical Guidelines**:
+
+| Situation | Distribution to Use | Justification |
+|-----------|-------------------|---------------|
+| Data normal, $\sigma$ known | $z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0,1)$ | Exact |
+| Data normal, $\sigma$ unknown | $t = \frac{\bar{X} - \mu}{s/\sqrt{n}} \sim t_{n-1}$ | Exact |
+| Data not normal, $n$ large ($\geq 30$) | $t \approx z$ (use either) | CLT + Law of Large Numbers |
+| Data not normal, $n$ small | Non-parametric test | t-test invalid |
 
 ---
 
 # t-test Computation
 
-Looking back at our hypothesis test example, we can calculate the **test statistic**:
+Looking back at our hypothesis test example, we calculate the **test statistic**:
 $$t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{172.5 - 170}{8.2/\sqrt{50}} = \frac{2.5}{1.16} = 2.16$$
 
-**Degrees of freedom**: $df = n - 1 = 49$
+**Why use t-distribution here?**
+
+- We assumed heights are normally distributed
+- Population variance $\sigma^2$ is unknown (we estimate it with $s^2$)
+- Therefore, we use the **exact t-distribution** with $df = n - 1 = 49$
+
+---
+
+# t-test Computation (cont.)
 
 **Critical values** (at $\alpha = 0.05$):
 
@@ -124,6 +166,8 @@ $$t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{172.5 - 170}{8.2/\sqrt{50}} = \
 - **p-value** $= 2 \cdot P(T > 2.16) \approx 0.035 < 0.05$
 
 **Conclusion**: There is evidence that the population mean height differs from 170 cm.
+
+**Note**: With $n = 50$, even if normality was violated, CLT would make this test approximately valid (we could use $z \approx t$ in that case).
 
 ---
 
